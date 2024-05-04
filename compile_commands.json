@@ -1,0 +1,28 @@
+[
+  {
+    "arguments": [
+      "/usr/sbin/clang",
+      "-Iinclude",
+      "-c",
+      "-o",
+      "obj/hello_world.o",
+      "src/hello_world.c"
+    ],
+    "directory": "/home/pprotas/projects/c-server",
+    "file": "/home/pprotas/projects/c-server/src/hello_world.c",
+    "output": "/home/pprotas/projects/c-server/obj/hello_world.o"
+  },
+  {
+    "arguments": [
+      "/usr/sbin/clang",
+      "-Iinclude",
+      "-c",
+      "-o",
+      "obj/setup.o",
+      "src/setup.c"
+    ],
+    "directory": "/home/pprotas/projects/c-server",
+    "file": "/home/pprotas/projects/c-server/src/setup.c",
+    "output": "/home/pprotas/projects/c-server/obj/setup.o"
+  }
+]

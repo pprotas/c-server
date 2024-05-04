@@ -1,12 +1,25 @@
-all: bin/hello_world
+CC = clang
+CFLAGS = -Iinclude
+OBJDIR = obj
+BINDIR = bin
+SOURCES = $(wildcard src/*.c)
+OBJECTS = $(SOURCES:src/%.c=$(OBJDIR)/%.o)
 
-bin/hello_world: src/hello_world.c
-	clang $< -o $@
+all: $(BINDIR)/hello_world
 
-bin:
-	mkdir -p bin
+$(BINDIR)/hello_world: $(OBJECTS) | $(BINDIR)
+	$(CC) $(OBJECTS) -o $@
+
+$(OBJDIR)/%.o: src/%.c | $(OBJDIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
+
+$(BINDIR):
+	mkdir -p $(BINDIR)
 
 clean:
-	rm -rf bin
+	rm -rf $(OBJDIR) $(BINDIR)
 
 .PHONY: all clean
