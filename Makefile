@@ -1,13 +1,13 @@
 CC = clang
-CFLAGS = -Iinclude
+CFLAGS = -Iinclude -g
 OBJDIR = obj
 BINDIR = bin
 SOURCES = $(wildcard src/*.c)
 OBJECTS = $(SOURCES:src/%.c=$(OBJDIR)/%.o)
 
-all: $(BINDIR)/hello_world
+all: $(BINDIR)/c-server
 
-$(BINDIR)/hello_world: $(OBJECTS) | $(BINDIR)
+$(BINDIR)/c-server: $(OBJECTS) | $(BINDIR)
 	$(CC) $(OBJECTS) -o $@
 
 $(OBJDIR)/%.o: src/%.c | $(OBJDIR)

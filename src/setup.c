@@ -1,5 +1,6 @@
 #include <netinet/in.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -12,7 +13,7 @@ int setup(struct sockaddr_in *address) {
   // -1 means there was an error
   if (server_fd == -1) {
     perror("socket creation failed");
-    return -1;
+    return EXIT_FAILURE;
   }
 
   // sin_family is declared within this struct using some cool macro that
@@ -57,7 +58,7 @@ int setup(struct sockaddr_in *address) {
   // we are pointing to a struct sockaddr.
   if (bind(server_fd, (struct sockaddr *)address, sizeof(*address)) == -1) {
     perror("bind failed");
-    return -1;
+    return EXIT_FAILURE;
   }
 
   // Prepare to accept connections on this socket file descriptor
@@ -65,7 +66,7 @@ int setup(struct sockaddr_in *address) {
   // refused
   if (listen(server_fd, 10) == -1) {
     perror("listen failed");
-    return -1;
+    return EXIT_FAILURE;
   }
 
   return server_fd;
