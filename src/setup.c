@@ -1,6 +1,5 @@
 #include <netinet/in.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -12,8 +11,8 @@ int setup(struct sockaddr_in *address) {
   int server_fd = socket(AF_INET, SOCK_STREAM, 0);
   // -1 means there was an error
   if (server_fd == -1) {
-    perror("socket creation failed");
-    return EXIT_FAILURE;
+    perror("Socket creation failed");
+    return -1;
   }
 
   // sin_family is declared within this struct using some cool macro that
@@ -56,17 +55,20 @@ int setup(struct sockaddr_in *address) {
   // But the * operator is also used in declarations to denote that the pointer
   // points to a specific type. So in this case, "struct sockaddr *" means that
   // we are pointing to a struct sockaddr.
+  // Set SO_REUSEADDR to 1 to reuse the port
+  int opt = 1;
+  setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
   if (bind(server_fd, (struct sockaddr *)address, sizeof(*address)) == -1) {
-    perror("bind failed");
-    return EXIT_FAILURE;
+    perror("Bind failed");
+    return -1;
   }
 
   // Prepare to accept connections on this socket file descriptor
   // There are 10 max pending connections, after that connections will be
   // refused
   if (listen(server_fd, 10) == -1) {
-    perror("listen failed");
-    return EXIT_FAILURE;
+    perror("Listen failed");
+    return -1;
   }
 
   return server_fd;

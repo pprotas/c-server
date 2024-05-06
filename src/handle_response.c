@@ -1,6 +1,5 @@
 #include <netinet/in.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -14,8 +13,8 @@ int handle_response(int socket_fd) {
   // Write the response to the connecting party
   if (write(socket_fd, response, strlen(response)) == -1) {
     perror("write failed");
-    return EXIT_FAILURE;
+    return -1;
   }
 
-  return EXIT_SUCCESS;
+  return 1;
 }

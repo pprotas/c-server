@@ -1,6 +1,5 @@
 #include <netinet/in.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
@@ -17,7 +16,7 @@ int handle_request(int socket_fd, struct sockaddr_in *address, char *buffer) {
       accept(socket_fd, (struct sockaddr *)address, (socklen_t *)&addrlen);
   if (new_socket < 0) {
     perror("accept failed");
-    return EXIT_FAILURE;
+    return -1;
   }
 
   // Read up to 1024 bytes from the opened socket file descriptor and put it
@@ -27,11 +26,11 @@ int handle_request(int socket_fd, struct sockaddr_in *address, char *buffer) {
 
   if (bytes_read == 0) {
     perror("connection closed");
-    return EXIT_FAILURE;
+    return -1;
   }
   if (bytes_read == -1) {
     perror("read failed");
-    return EXIT_FAILURE;
+    return -1;
   }
   return new_socket;
 }

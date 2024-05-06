@@ -1,5 +1,6 @@
 #include "handle_request.h"
 #include "handle_response.h"
+#include "parse_http.h"
 #include "setup.h"
 #include <netinet/in.h>
 #include <signal.h>
@@ -9,27 +10,18 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-volatile sig_atomic_t keep_running = 1;
-
-int server_fd;
-int new_socket;
+int server_fd, new_socket;
 
 void cleanup(void) {
-  printf("Cleaning up\n");
   close(new_socket);
   close(server_fd);
 }
 
-void handle_signal(int signal) {
-  if (signal == SIGINT) {
-    keep_running = 0;
-    exit(SIGINT);
-  }
-}
+void handle_signal(int signal) { exit(EXIT_SUCCESS); }
 
 int main() {
-  atexit(cleanup);
   signal(SIGINT, handle_signal);
+  atexit(cleanup);
 
   // A struct is a way to group related data items into a single entity
   // It's like a custom data type that can be defined by the programmer
@@ -52,7 +44,7 @@ int main() {
   // This is a similar "cleaning" practice like we did at the start with
   // address.
   char buffer[1024] = {0};
-  while (keep_running) {
+  while (1) {
     new_socket = handle_request(server_fd, &address, buffer);
     if (new_socket == -1) {
       perror("Could not handle request");
@@ -60,7 +52,7 @@ int main() {
     }
 
     // We format the buffer into a string and print the request
-    printf("Received message: %s\n", buffer);
+    parse_http(buffer);
 
     // Clean up the buffer after use to prevent issues with subsequent requests
     memset(buffer, 0, sizeof(buffer));
@@ -76,6 +68,4 @@ int main() {
     // Clean up the client's IP address info after usage
     memset(&address, 0, sizeof(address));
   }
-
-  return EXIT_SUCCESS;
 }

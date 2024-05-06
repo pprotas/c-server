@@ -1,4 +1,3 @@
-
 #ifndef HANDLE_RESPONSE_H
 #define HANDLE_RESPONSE_H
 
