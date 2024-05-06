@@ -13,7 +13,7 @@ I use this repo to learn a bit about the C programming language. I also wanted t
 
 That's it :)
 
-## Goals
+### Goals
 - [x] Listen for requests and write a response
 - [ ] Actually parse the HTTP headers
 - [ ] Respond in different ways depending on the route or HTTP method (GET/POST)
