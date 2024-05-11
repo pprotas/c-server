@@ -3,6 +3,6 @@
 
 #include <netinet/in.h>
 
-int parse_http(char *http);
+int parse_http(char *http, char **body);
 
 #endif

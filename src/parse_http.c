@@ -6,7 +6,7 @@ int parse_request_line(char *request_line, char **method, char **request_uri,
                        char **http_version);
 int parse_header(char *header, char **key, char **value);
 
-int parse_http(char *http) {
+int parse_http(char *http, char **body) {
   // Since we will be doing a "nested" strtok in a bit, we can use strtok_r with
   // a save pointer to continue where we left off later
   char *saveptr;
@@ -19,7 +19,13 @@ int parse_http(char *http) {
 
   // Some basic header checks here. In a more realistic program, this would be
   // way more complicated to support all methods and routes.
-  if (strcmp(method, "POST") != 0 || strcmp(method, "GET") != 0) {
+  int result;
+  if (strcmp(method, "POST") == 0) {
+    result = 1;
+  } else if (strcmp(method, "GET") == 0) {
+    result = 0;
+  } else {
+
     perror("Only GET and POST methods are supported");
 
     free(method);
@@ -29,43 +35,62 @@ int parse_http(char *http) {
     return -1;
   }
 
+  free(method);
+
   if (strcmp(request_uri, "/") != 0) {
     perror("Only the / route is supported");
 
-    free(method);
     free(request_uri);
     free(http_version);
 
     return -1;
   }
 
+  free(request_uri);
   // We ignore HTTP version for now, since it makes no difference for the
   // purposes of our program
-
-  free(request_uri);
   free(http_version);
 
   // Continue with the rest of the request
   token = strtok_r(NULL, "\n", &saveptr);
 
   char *key, *value;
-  while (token != NULL && strcmp(token, "\n") != 0) {
+  while (token != NULL && strcmp(token, "\r") != 0) {
     parse_header(token, &key, &value);
+
+    if (strcmp(key, "Accept") == 0) {
+      if (strcmp(value, "text/plain") != 0) {
+        perror("Accept only valid value is text/plain");
+
+        free(key);
+        free(value);
+
+        return -1;
+      }
+    } else if (strcmp(key, "Content-Type") == 0) {
+      if (strcmp(value, "text/plain") != 0) {
+        printf(">>%s<<\n", value);
+        perror("Content-Type only valid value is text/plain");
+
+        free(key);
+        free(value);
+
+        return -1;
+      }
+    }
+
     token = strtok_r(NULL, "\n", &saveptr);
-    // TODO: Do some header parsing
-    // Return if Accept is not plain text
-    // Return if Content-Type is not plain text
   }
-
-  // TODO: Get message body if POST
-
-  // TODO: Probably just return method & body to keep it simple. Make the caller
-  // responsible for the memory management.
 
   free(key);
   free(value);
 
-  return 0;
+  if (result == 1) {
+    token = strtok_r(NULL, "\n", &saveptr);
+    *body = strdup(token);
+  }
+
+  return result;
 }
 
 int parse_request_line(char *request_line, char **method, char **request_uri,
@@ -87,7 +112,9 @@ int parse_header(char *header, char **key, char **value) {
   char *token = strtok(header, ":");
   *key = strdup(token);
 
-  token = strtok(header, ":");
+  token = strtok(NULL, "\r\n");
+  while (*token == ' ')
+    token++;
   *value = strdup(token);
 
   return 0;

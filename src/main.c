@@ -48,18 +48,23 @@ int main() {
     new_socket = handle_request(server_fd, &address, buffer);
     if (new_socket == -1) {
       perror("Could not handle request");
-      exit(EXIT_FAILURE);
+      continue;
     }
 
     // We format the buffer into a string and print the request
-    parse_http(buffer);
+    char *body;
+    int method = parse_http(buffer, &body);
+    if (method < 0) {
+      perror("Could not parse HTTP");
+      continue;
+    }
 
     // Clean up the buffer after use to prevent issues with subsequent requests
     memset(buffer, 0, sizeof(buffer));
 
     if (handle_response(new_socket) == -1) {
       perror("Could not handle response");
-      exit(EXIT_FAILURE);
+      continue;
     }
 
     // Close the socket for this specific client

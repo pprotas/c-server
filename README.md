@@ -15,5 +15,5 @@ That's it :)
 
 ### Goals
 - [x] Listen for requests and write a response
-- [ ] Actually parse the HTTP headers
+- [x] Actually parse the HTTP headers
 - [ ] Respond in different ways depending on the route or HTTP method (GET/POST)
