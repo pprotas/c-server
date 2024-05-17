@@ -12,6 +12,8 @@
 
 int server_fd, new_socket;
 
+char *body = "nothing";
+
 void cleanup(void) {
   close(new_socket);
   close(server_fd);
@@ -52,7 +54,6 @@ int main() {
     }
 
     // We format the buffer into a string and print the request
-    char *body;
     int method = parse_http(buffer, &body);
     if (method < 0) {
       perror("Could not parse HTTP");
@@ -62,7 +63,7 @@ int main() {
     // Clean up the buffer after use to prevent issues with subsequent requests
     memset(buffer, 0, sizeof(buffer));
 
-    if (handle_response(new_socket) == -1) {
+    if (handle_response(new_socket, &body) == -1) {
       perror("Could not handle response");
       continue;
     }

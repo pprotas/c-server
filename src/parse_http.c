@@ -54,7 +54,7 @@ int parse_http(char *http, char **body) {
   // Continue with the rest of the request
   token = strtok_r(NULL, "\n", &saveptr);
 
-  char *key, *value;
+  char *key = NULL, *value = NULL;
   while (token != NULL && strcmp(token, "\r") != 0) {
     parse_header(token, &key, &value);
 
@@ -69,7 +69,6 @@ int parse_http(char *http, char **body) {
       }
     } else if (strcmp(key, "Content-Type") == 0) {
       if (strcmp(value, "text/plain") != 0) {
-        printf(">>%s<<\n", value);
         perror("Content-Type only valid value is text/plain");
 
         free(key);

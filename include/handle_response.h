@@ -5,6 +5,6 @@
 
 /* Sends some response back to the client on the socket. Returns -1 for errors,
  * otherwise 0. */
-int handle_response(int socket_fd);
+int handle_response(int socket_fd, char **body);
 
 #endif

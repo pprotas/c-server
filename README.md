@@ -8,6 +8,7 @@ I use this repo to learn a bit about the C programming language. I also wanted t
 
 ## Features
 - Listen for requests on port 8080
+- Save a string to memory using a POST request
 - Send a response
 
 
@@ -16,4 +17,4 @@ That's it :)
 ### Goals
 - [x] Listen for requests and write a response
 - [x] Actually parse the HTTP headers
-- [ ] Respond in different ways depending on the route or HTTP method (GET/POST)
+- [x] Respond in different ways depending on the route or HTTP method (GET/POST)
